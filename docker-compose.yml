@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  web:
+    image: my_test_app
+    build: .
+    ports:
+      - "8888:80"
+    networks:
+      - webnet
+    depends_on:
+      - db
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=
+      - MYSQL_DATABASE=site1
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes" 
+      MYSQL_DATABASE: site1
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./site1.sql:/docker-entrypoint-initdb.d/site1.sql
+    networks:
+      - webnet
+
+networks:
+  webnet:
+
+volumes:
+  db_data:
+
